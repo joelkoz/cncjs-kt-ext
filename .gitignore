@@ -1,3 +1,5 @@
 node_modules/
 .vscode/
 pm2.config.js
+__last_Z_probe.txt
+*.txt
