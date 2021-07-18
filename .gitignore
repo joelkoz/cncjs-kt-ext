@@ -3,3 +3,4 @@ node_modules/
 pm2.config.js
 __last_Z_probe.txt
 *.txt
+package-lock.json
