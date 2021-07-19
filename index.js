@@ -166,7 +166,11 @@ function callback (err, socket) {
   socket.on('serialport:write', function (data, context) {
     if (data.indexOf('#autolevel_reapply') >= 0 && context && context.source === 'feeder') {
       autolevel.reapply(data, context)
-    } else if (data.indexOf('#autolevel') >= 0 && context && context.source === 'feeder') {
+    }
+    else if (data.indexOf('#autolevel_cancel') > 0) {
+      autolevel.cancelProbe();
+    } 
+    else if (data.indexOf('#autolevel') >= 0 && context && context.source === 'feeder') {
       autolevel.start(data, context)
     } else if (data.indexOf('PROBEOPEN') > 0) {
       console.log(`Probe file open command: ${data}`);
@@ -179,9 +183,6 @@ function callback (err, socket) {
     } else if (data.indexOf('PROBECLOSE') > 0) {
          console.log('Probe file close command');
          autolevel.fileClose();
-    }
-    else if (data.indexOf('#autolevel_cancel') > 0) {
-      autolevel.cancelProbe();
     }
     else {
       autolevel.updateContext(context)
