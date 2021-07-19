@@ -519,9 +519,11 @@ module.exports = class Autolevel {
       this.sckw.sendGcode(`(AL: loading new gcode ${newgcodeFileName} ...)`)
       this.sckw.loadGcode(newgcodeFileName, result.join('\n'))
       this.sckw.sendGcode(`(AL: finished)`)
+      console.log('Leveling applied')
     } catch (x) {
       this.sckw.sendGcode(`(AL: error occurred ${x})`)
+      console.log('Error during leveling: ', x)
     }
-    console.log('Leveling applied')
+
   }
 }
