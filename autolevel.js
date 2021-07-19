@@ -142,6 +142,7 @@ module.exports = class Autolevel {
   fileOpen(fileName) {
      try {
         this.probeFile = fs.openSync(fileName, "w");
+        this.probeFileName = fileName;
         console.log(`Opened probe file ${fileName}`);
         this.sckw.sendGcode(`(AL: Opened probe file ${fileName})`)        
      }
@@ -158,6 +159,26 @@ module.exports = class Autolevel {
          this.probeFile = 0;
       }
   }
+
+
+  cancelProbe() {
+     if (this.probeFile) {
+        this.fileClose();
+        fs.unlink(this.probeFileName, (err) => { if (err) console.log('Can not remove probe file.', err) });
+      }
+      let msg;
+      if (this.planedPointCount) {
+         this.planedPointCount = 0;
+         this.wco = { x: 0, y: 0, z: 0 }
+         msg = 'Active probe canceled'
+      }
+      else {
+        msg = 'No active probe to cancel'
+      }
+      this.sckw.sendGcode(`(AL: ${msg})`)
+      console.log(msg);
+  }
+
 
   reapply(cmd,context) {
     if (!this.gcode) {
@@ -286,6 +307,8 @@ module.exports = class Autolevel {
         this.planedPointCount++
       }
     }
+    code.unshift(`(AL: start probe: ${this.planedPointCount} points)`)
+    code.push('(AL: done)')
     this.sckw.sendGcode(code.join('\n'))
   }
 

@@ -180,6 +180,9 @@ function callback (err, socket) {
          console.log('Probe file close command');
          autolevel.fileClose();
     }
+    else if (data.indexOf('#autolevel_cancel') > 0) {
+      autolevel.cancelProbe();
+    }
     else {
       autolevel.updateContext(context)
     }
